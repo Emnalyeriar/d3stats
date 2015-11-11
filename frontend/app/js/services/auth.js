@@ -5,7 +5,7 @@ function Auth($cookies, $http) {
   const Auth = {};
 
   Auth.register = function(email, password, username, confirm_password) {
-    return $http.post('http://localhost:8080/api/v1/accounts/', {
+    return $http.post('/api/accounts/', {
       username: username,
       password: password,
       email: email,
@@ -19,7 +19,7 @@ function Auth($cookies, $http) {
     console.log('error');
   };
   Auth.login = function(username, password) {
-    return $http.post('http://localhost:8080/api/v1/auth/login/', {
+    return $http.post('/api/auth/login/', {
       username: username,
       password: password
     }).then(Auth.loginSuccessFn, Auth.loginErrorFn);
@@ -50,7 +50,7 @@ function Auth($cookies, $http) {
     $cookies.remove('authenticatedAccount');
   };
   Auth.logout = function() {
-    return $http.post('http://localhost:8080/api/v1/auth/logout/').then(Auth.logoutSuccessFn, Auth.logoutErrorFn);
+    return $http.post('/api/auth/logout/').then(Auth.logoutSuccessFn, Auth.logoutErrorFn);
   };
   Auth.logoutSuccessFn = function() {
     Auth.unauthenticate();

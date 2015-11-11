@@ -1,3 +1,4 @@
 d3stats/settings/development.py
 d3stats/settings/production.py
 __pycache__
+frontend/node_modules
