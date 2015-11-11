@@ -1,0 +1,2 @@
+angular.module("templates", []).run(["$templateCache", function($templateCache) {$templateCache.put("home.html","<form ng-submit=\"login()\">\n  <input type=\"text\" ng-model=\"username\" placeholder=\"username\">\n  <input type=\"password\" ng-model=\"password\" placeholder=\"password\">\n  <button type=\"submit\" name=\"button\">Submit</button>\n</form>\n<button type=\"button\" name=\"button\" ng-click=\"logout()\">Logout</button>\n");
+$templateCache.put("directives/example.html","<div class=\"example-directive\">\n  <h1>{{title}}</h1>\n</div>\n");}]);
