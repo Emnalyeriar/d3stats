@@ -20,7 +20,9 @@ urlpatterns = patterns(
     url(r'^api/', include(router.urls)),
     # url(r'^api/v1/', include(accounts_router.urls)),
     url(r'^api/accounts/$', AccountView.as_view(), name='accounts'),
+    url(r'^api/accounts/(?P<region>\w+)/(?P<battle_tag>[a-zA-Z]{2,12}-\d{4})/$',
+        AccountView.as_view()),
     url(r'^api/auth/login/$', LoginView.as_view(), name='login'),
     url(r'^api/auth/logout/$', LogoutView.as_view(), name='logout'),
-    url('^.*$', IndexView.as_view(), name='in/f dex'),
+    # url('^.*$', IndexView.as_view(), name='in/f dex'),
 )
