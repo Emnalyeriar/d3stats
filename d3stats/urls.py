@@ -4,8 +4,10 @@ from rest_framework import routers
 from authentication.views import UserViewSet, LoginView, LogoutView
 from .views import IndexView
 
+from accounts.views import AccountView
+
 router = routers.SimpleRouter()
-router.register(r'accounts', UserViewSet)
+# router.register(r'accounts', AccountView, base_name='accounts')
 # router.register(r'posts', PostViewSet)
 
 # accounts_router = routers.NestedSimpleRouter(
@@ -17,7 +19,8 @@ urlpatterns = patterns(
     '',
     url(r'^api/', include(router.urls)),
     # url(r'^api/v1/', include(accounts_router.urls)),
+    url(r'^api/accounts/$', AccountView.as_view(), name='accounts'),
     url(r'^api/auth/login/$', LoginView.as_view(), name='login'),
     url(r'^api/auth/logout/$', LogoutView.as_view(), name='logout'),
-    url('^.*$', IndexView.as_view(), name='index'),
+    url('^.*$', IndexView.as_view(), name='in/f dex'),
 )
