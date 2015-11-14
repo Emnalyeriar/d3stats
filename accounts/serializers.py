@@ -7,4 +7,4 @@ class AccountSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Account
-        fields = ('battle_tag',)
+        # fields = ('battle_tag',)
