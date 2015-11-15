@@ -16,7 +16,7 @@ class Account(models.Model):
 
 
 class AccountHistory(models.Model):
-    account = models.ForeignKey(Account)
+    account = models.ForeignKey(Account, related_name='history')
     date = models.DateField(auto_now_add=True)
     paragon_sc = models.IntegerField()
     paragon_hc = models.IntegerField()
@@ -25,6 +25,3 @@ class AccountHistory(models.Model):
     monsters = models.IntegerField()
     elites = models.IntegerField()
     monsters_hc = models.IntegerField()
-
-    def __str__(self):
-        return self.battle_tag
