@@ -26,3 +26,6 @@ class AccountHistory(models.Model):
     monsters = models.IntegerField()
     elites = models.IntegerField()
     monsters_hc = models.IntegerField()
+
+    def __str__(self):
+        return self.date

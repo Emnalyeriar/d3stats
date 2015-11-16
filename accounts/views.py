@@ -19,7 +19,7 @@ class AccountView(APIView):
             accounts = Account.objects.all()
             serializer = AccountSerializer(accounts, many=True)
             return Response(serializer.data)
-            
+
         battle_tag_hash = battle_tag.replace('-', '#')
         account = Account.objects.filter(
             battle_tag__iexact=battle_tag_hash).first()
@@ -29,7 +29,6 @@ class AccountView(APIView):
         if (not account or
            not account_history or
            account.last_updated.date() != timezone.now().date()):
-        #   account.last_played > account_history.first().date):
 
             APIresponse = get_account(region, battle_tag)
             if APIresponse.status_code != 200:
@@ -59,7 +58,8 @@ class AccountView(APIView):
                 )
                 account.save()
 
-            if not account_history or data['lastUpdated'] > account.last_played:
+            if (not account_history or
+               data['lastUpdated'] > account.last_played):
 
                 account_history_today = AccountHistory(
                     account=account,
@@ -83,4 +83,11 @@ class AccountView(APIView):
                 account.save()
 
         serializer = AccountSerializer(instance=account)
+        return Response(serializer.data)
+
+
+class RecentlyUpdatedView(APIView):
+    def get(self, request, format=None):
+        accounts = Account.objects.order_by('-last_updated')[:10]
+        serializer = AccountSerializer(accounts, many=True)
         return Response(serializer.data)
