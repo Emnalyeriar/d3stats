@@ -3,8 +3,9 @@ from jsonfield import JSONField
 
 
 class Account(models.Model):
+    region = models.CharField(max_length=2)
     battle_tag = models.CharField(max_length=100)
-    last_updated = models.DateField(auto_now=True)
+    last_updated = models.DateTimeField(auto_now=True)
     last_played = models.DateField()
     heroes = JSONField()
     guild_name = models.CharField(max_length=200)
