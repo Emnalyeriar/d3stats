@@ -33,8 +33,8 @@ class UserViewSet(viewsets.ModelViewSet):
     def create(self, request):
         serializer = self.serializer_class(data=request.data)
 
-        if serializer.is_valid() and serializer.initial_data['password'] == serializer.initial_data['confirm_password']:
-            # serializer.validated_data.pop('confirm_password')
+        # if serializer.is_valid(raise_exception=True):
+        if serializer.is_valid():
             User.objects.create_user(**serializer.validated_data)
 
             return Response(serializer.validated_data,
@@ -42,14 +42,13 @@ class UserViewSet(viewsets.ModelViewSet):
 
         return Response({
             'status': 'Bad request',
-            'message': 'Account could not be created with received data'
+            'message': serializer.errors['non_field_errors'][0]
         }, status=status.HTTP_400_BAD_REQUEST)
 
     # def destroy(self, request):
     #     serializer = self.serializer_class(data=request.data)
     #
-    #     if serializer.is_valid() and serializer.initial_data['password'] == serializer.initial_data['confirm_password']:
-    #         # serializer.validated_data.pop('confirm_password')
+    #     if serializer.is_valid():
     #         User.objects.create_user(**serializer.validated_data)
     #
     #         return Response(serializer.validated_data,

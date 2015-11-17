@@ -7,7 +7,7 @@ from .views import IndexView
 from accounts.views import AccountView, RecentlyUpdatedView
 
 router = routers.SimpleRouter()
-# router.register(r'accounts', AccountView, base_name='accounts')
+router.register(r'register', UserViewSet, base_name='register')
 # router.register(r'posts', PostViewSet)
 
 # accounts_router = routers.NestedSimpleRouter(
