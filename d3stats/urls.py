@@ -23,8 +23,9 @@ urlpatterns = patterns(
     url(r'^api/auth/logout/$', LogoutView.as_view(), name='logout'),
 
     url(r'^api/accounts/$', AccountView.as_view(), name='accounts'),
-    url(r'^api/accounts/(?P<region>\w+)/(?P<battle_tag>[a-zA-Z]{2,12}-\d{4})/$'
-        , AccountView.as_view()),
-    url(r'^api/accounts/recent', RecentlyUpdatedView.as_view(), name='recent'),
+    url(r'^api/accounts/(?P<region>\w+)/(?P<battle_tag>\w{2,12}-\d{4})/$',
+        AccountView.as_view()),
+    url(r'^api/accounts/recent/$', RecentlyUpdatedView.as_view(),
+        name='recent'),
     url('^.*$', IndexView.as_view(), name='index'),
 )

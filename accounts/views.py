@@ -10,7 +10,7 @@ from rest_framework.response import Response
 from battlenet.API import get_account
 
 from .models import Account, AccountHistory
-from .serializers import AccountSerializer
+from .serializers import BaseAccountSerializer, AccountSerializer
 
 
 class AccountView(APIView):
@@ -89,5 +89,5 @@ class AccountView(APIView):
 class RecentlyUpdatedView(APIView):
     def get(self, request, format=None):
         accounts = Account.objects.order_by('-last_updated')[:10]
-        serializer = AccountSerializer(accounts, many=True)
+        serializer = BaseAccountSerializer(accounts, many=True)
         return Response(serializer.data)

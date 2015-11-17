@@ -15,10 +15,13 @@ class BaseAccountSerializer(serializers.ModelSerializer):
     class Meta:
         model = Account
         fields = ('region', 'battle_tag', 'last_updated', 'last_played',
-                  'heroes', 'guild_name', 'time_played', 'history')
+                  'heroes', 'guild_name', 'time_played',)
 
-class AccountSerializer(BaseAccountSerializer):
+
+class AccountSerializer(serializers.ModelSerializer):
     history = AccountHistorySerializer(many=True, read_only=True)
 
-    class Meta(BaseAccountSerializer.Meta):
-        pass
+    class Meta:
+        model = Account
+        fields = ('region', 'battle_tag', 'last_updated', 'last_played',
+                  'heroes', 'guild_name', 'time_played', 'history',)
