@@ -4,7 +4,7 @@ from rest_framework import routers
 from authentication.views import UserViewSet, LoginView, LogoutView
 from .views import IndexView
 
-from accounts.views import AccountView, RecentlyUpdatedView
+from accounts.views import AccountView, RecentlyUpdatedView, LeaderboardsView
 
 router = routers.SimpleRouter()
 router.register(r'register', UserViewSet, base_name='register')
@@ -27,5 +27,7 @@ urlpatterns = patterns(
         AccountView.as_view()),
     url(r'^api/accounts/recent/$', RecentlyUpdatedView.as_view(),
         name='recent'),
+    url(r'^api/accounts/leaderboards/(?P<region>\w+)/(?P<league>\w+[-]*\w+)/$',
+        LeaderboardsView.as_view(), name='leaderboards'),
     url('^.*$', IndexView.as_view(), name='index'),
 )

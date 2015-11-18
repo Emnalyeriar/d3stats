@@ -2,7 +2,7 @@ from datetime import datetime
 
 from django.utils import timezone
 
-from rest_framework import status
+from rest_framework import status, generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
 # from rest_framework import authentication, permissions
@@ -11,6 +11,7 @@ from battlenet.API import get_account
 
 from .models import Account, AccountHistory
 from .serializers import BaseAccountSerializer, AccountSerializer
+from .paginations import LeaderboardsPagination
 
 
 class AccountView(APIView):
@@ -62,7 +63,7 @@ class AccountView(APIView):
                data['lastUpdated'] > account.last_played):
 
                 account_history_today = AccountHistory(
-                    account=account,
+                    related_account=account,
                     paragon_sc=data['paragonLevel'],
                     paragon_hc=data['paragonLevelHardcore'],
                     paragon_sc_s=data['paragonLevelSeason'],
@@ -72,6 +73,8 @@ class AccountView(APIView):
                     monsters_hc=data['kills']['hardcoreMonsters'],
                 )
                 account_history_today.save()
+                account.last_history = account_history_today
+                account.save()
 
             if (data['lastUpdated'] > account.last_played):
                 account.last_played = data['lastUpdated']
@@ -91,3 +94,20 @@ class RecentlyUpdatedView(APIView):
         accounts = Account.objects.order_by('-last_updated')[:10]
         serializer = BaseAccountSerializer(accounts, many=True)
         return Response(serializer.data)
+
+
+class LeaderboardsView(generics.ListAPIView):
+    serializer_class = BaseAccountSerializer
+    model = Account
+    pagination_class = LeaderboardsPagination
+
+    def get_queryset(self):
+        region = self.kwargs['region']
+        query = '-last_history__paragon_'
+        query += self.kwargs['league'].replace('-', '_')
+        if region == 'all':
+            accounts = Account.objects.all()
+        else:
+            accounts = Account.objects.filter(region=region)
+        queryset = accounts.order_by(query)
+        return queryset
