@@ -1,4 +1,5 @@
-from datetime import timedelta
+# from datetime import timedelta
+from django.db import connection
 from django.utils import timezone
 from django.core.urlresolvers import reverse
 from rest_framework import status
@@ -106,21 +107,31 @@ class AccountTests(APITestCase):
                 self.assertEqual(response.status_code, status.HTTP_200_OK)
                 self.assertEqual(len(response.data['results']), 1)
 
-    # def test_update_account_data(self):
-    #     """
-    #     Ensure account data is updated if account was played since last
-    #     update.
-    #     """
-    #     account = Account.objects.get(
-    #         battle_tag=self.EXAMPLE_ACCOUNTS[0]['battle_tag'])
-    #     account.last_played = timezone.now().date() - timedelta(days=1)
-    #     account.save()
-    #     url = reverse('account-details', kwargs=self.EXAMPLE_ACCOUNTS[0])
-    #     response = self.client.get(url, format='json')
-    #     account = Account.objects.get(
-    #         battle_tag=self.EXAMPLE_ACCOUNTS[0]['battle_tag'])
-    #
-    #     self.assertEqual(
-    #         response.data['last_played'],
-    #         account.last_played.strftime('%Y-%m-%d')
-    #     )
+    def test_update_account_data(self):
+        """
+        Ensure account data is updated if account was played since last
+        update.
+        """
+        cursor = connection.cursor()
+        last_updated_query = """
+            UPDATE accounts_account
+            SET last_updated='2000-11-18 19:52:51.060350'
+            WHERE battle_tag='{battle_tag}'
+        """.format(**self.EXAMPLE_ACCOUNTS[0])
+        last_played_query = """
+            UPDATE accounts_account
+            SET last_played='2000-11-18'
+            WHERE battle_tag='{battle_tag}'
+        """.format(**self.EXAMPLE_ACCOUNTS[0])
+        cursor.execute(last_updated_query)
+        cursor.execute(last_played_query)
+
+        url = reverse('account-details', kwargs=self.EXAMPLE_ACCOUNTS[0])
+        response = self.client.get(url, format='json')
+        account = Account.objects.get(
+            battle_tag=self.EXAMPLE_ACCOUNTS[0]['battle_tag'])
+
+        self.assertEqual(
+            response.data['last_played'],
+            account.last_played.strftime('%Y-%m-%d')
+        )
