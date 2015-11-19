@@ -1,0 +1,7 @@
+[run]
+source = .
+omit =
+  **/migrations/*
+  d3stats/*
+  **/__init__.py
+  manage.py
