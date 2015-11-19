@@ -2,6 +2,7 @@
 source = .
 omit =
   **/migrations/*
+  **/tests.py
   d3stats/*
   **/__init__.py
   manage.py

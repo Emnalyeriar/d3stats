@@ -30,9 +30,8 @@ class AccountView(APIView):
             serializer = AccountSerializer(accounts, many=True)
             return Response(serializer.data)
 
-        battle_tag_hash = battle_tag.replace('-', '#')
         account = Account.objects.filter(
-            battle_tag__iexact=battle_tag_hash).first()
+            battle_tag__iexact=battle_tag).first()
         account_history = AccountHistory.objects.order_by(
             '-date').filter(account=account)
 
@@ -60,7 +59,7 @@ class AccountView(APIView):
             if not account:
                 account = Account(
                     region=region,
-                    battle_tag=data['battleTag'],
+                    battle_tag=data['battleTag'].replace('#', '-'),
                     last_played=data['lastUpdated'],
                     heroes=data['heroes'],
                     guild_name=data['guildName'],
