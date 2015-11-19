@@ -5,7 +5,6 @@ from django.utils import timezone
 from rest_framework import status, generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
-# from rest_framework import authentication, permissions
 
 from battlenet.API import get_account
 
@@ -30,7 +29,6 @@ class AccountView(APIView):
         if (not account or
            not account_history or
            account.last_updated.date() != timezone.now().date()):
-
             APIresponse = get_account(region, battle_tag)
             if APIresponse.status_code != 200:
                 return Response({
@@ -39,14 +37,15 @@ class AccountView(APIView):
                 }, status.HTTP_500_INTERNAL_SERVER_ERROR)
 
             data = APIresponse.json()
-            data['lastUpdated'] = datetime.fromtimestamp(
-                int(data['lastUpdated'])).date()
 
             if 'code' in data and data['code'] == 'NOTFOUND':
                 return Response({
                     'status': 'Not Found',
                     'message': 'The account could not be found'
                 }, status.HTTP_404_NOT_FOUND)
+
+            data['lastUpdated'] = datetime.fromtimestamp(
+                int(data['lastUpdated'])).date()
 
             if not account:
                 account = Account(
@@ -74,18 +73,16 @@ class AccountView(APIView):
                 )
                 account_history_today.save()
                 account.last_history = account_history_today
-                account.save()
 
             if (data['lastUpdated'] > account.last_played):
                 account.last_played = data['lastUpdated']
                 account.heroes = data['heroes'],
                 account.guild_name = data['guildName'],
                 account.time_played = data['timePlayed']
-                account.save()
-            else:
-                account.save()
 
-        serializer = AccountSerializer(instance=account)
+            account.save()
+
+        serializer = AccountSerializer(account)
         return Response(serializer.data)
 
 
