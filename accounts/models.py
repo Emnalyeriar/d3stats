@@ -43,4 +43,4 @@ class AccountHistory(models.Model):
     monsters_hc = models.IntegerField()
 
     def __str__(self):
-        return self.date
+        return self.date.strftime('%Y-%m-%d')

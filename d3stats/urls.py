@@ -22,9 +22,9 @@ urlpatterns = patterns(
     url(r'^api/auth/login/$', LoginView.as_view(), name='login'),
     url(r'^api/auth/logout/$', LogoutView.as_view(), name='logout'),
 
-    url(r'^api/accounts/$', AccountView.as_view(), name='accounts'),
+    url(r'^api/accounts/$', AccountView.as_view(), name='accounts-list'),
     url(r'^api/accounts/(?P<region>\w+)/(?P<battle_tag>\w{2,12}-\d{4})/$',
-        AccountView.as_view()),
+        AccountView.as_view(), name='account-details'),
     url(r'^api/accounts/recent/$', RecentlyUpdatedView.as_view(),
         name='recent'),
     url(r'^api/accounts/leaderboards/(?P<region>\w+)/(?P<league>\w+[-]*\w+)/$',

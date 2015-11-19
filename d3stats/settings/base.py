@@ -36,13 +36,11 @@ INSTALLED_APPS = (
     'jsonfield',
     'rest_framework',
     'authentication',
-    # 'corsheaders',
     'accounts',
 )
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
