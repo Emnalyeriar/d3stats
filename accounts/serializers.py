@@ -34,42 +34,16 @@ class AccountSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         data = super(AccountSerializer, self).to_representation(instance)
-        rank_sc = Account.objects.filter(
-            last_history__paragon_sc__gt=instance.last_history.paragon_sc
-        ).count()
-        region_rank_sc = Account.objects.filter(
-            last_history__paragon_sc__gt=instance.last_history.paragon_sc,
-            region=instance.region
-        ).count()
-        rank_hc = Account.objects.filter(
-            last_history__paragon_hc__gt=instance.last_history.paragon_hc
-        ).count()
-        region_rank_hc = Account.objects.filter(
-            last_history__paragon_hc__gt=instance.last_history.paragon_hc,
-            region=instance.region
-        ).count()
-        rank_sc_s = Account.objects.filter(
-            last_history__paragon_sc_s__gt=instance.last_history.paragon_sc_s
-        ).count()
-        region_rank_sc_s = Account.objects.filter(
-            last_history__paragon_sc_s__gt=instance.last_history.paragon_sc_s,
-            region=instance.region
-        ).count()
-        rank_hc_s = Account.objects.filter(
-            last_history__paragon_hc_s__gt=instance.last_history.paragon_hc_s
-        ).count()
-        region_rank_hc_s = Account.objects.filter(
-            last_history__paragon_hc_s__gt=instance.last_history.paragon_hc_s,
-            region=instance.region
-        ).count()
-        data['rank_sc'] = rank_sc + 1
-        data['rank_hc'] = rank_hc + 1
-        data['rank_sc_s'] = rank_sc_s + 1
-        data['rank_hc_s'] = rank_hc_s + 1
-        data['region_rank_sc'] = region_rank_sc + 1
-        data['region_rank_hc'] = region_rank_hc + 1
-        data['region_rank_sc_s'] = region_rank_sc_s + 1
-        data['region_rank_hc_s'] = region_rank_hc_s + 1
+        leagues = {
+            'rank_sc': 'paragon_sc',
+            'rank_hc': 'paragon_hc',
+            'rank_sc_s': 'paragon_sc_s',
+            'rank_hc_s': 'paragon_hc_s',
+        }
+        for rank, paragon in leagues.items():
+            filter = {'last_history__'+paragon+'__gt':
+                      getattr(instance.last_history, paragon)}
+            data[rank] = Account.objects.filter(**filter).count() + 1
         return data
 
     class Meta:
