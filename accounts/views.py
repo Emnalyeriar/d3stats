@@ -14,6 +14,16 @@ from .paginations import LeaderboardsPagination
 
 
 class AccountView(APIView):
+    """
+    Main View for Account model.
+
+    This view checks if Account was already inspected today. If so it just
+    return the account data from db, otherwise makes a new Account instance
+    or updated the data based on Battle.net API data.
+
+    @get /api/accounts -> displays all accounts adata #just for debugging
+    @get /api/accounts/<region>/<battle_tag>/ -> displays bnet account data
+    """
     def get(self, request, region=None, battle_tag=None, format=None):
         if region is None or battle_tag is None:
             accounts = Account.objects.all()
@@ -87,6 +97,9 @@ class AccountView(APIView):
 
 
 class RecentlyUpdatedView(APIView):
+    """
+    Shows the last 10 updated accounts.
+    """
     def get(self, request, format=None):
         accounts = Account.objects.order_by('-last_updated')[:10]
         serializer = BaseAccountSerializer(accounts, many=True)
@@ -94,6 +107,12 @@ class RecentlyUpdatedView(APIView):
 
 
 class LeaderboardsView(generics.ListAPIView):
+    """
+    Shows accounts leaderboards.
+
+    @get /api/accounts/leaderboards/<region>/<league>/ -> shows leaders boards
+    for specified region and league
+    """
     serializer_class = BaseAccountSerializer
     model = Account
     pagination_class = LeaderboardsPagination
