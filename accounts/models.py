@@ -3,6 +3,10 @@ from jsonfield import JSONField
 
 
 class Account(models.Model):
+    """
+    Model representing Bnet account data.
+    Stores data which history isn't tracked.
+    """
     REGION_CHOICES = (
         ('eu', 'Europe'),
         ('us', 'Americas'),
@@ -23,6 +27,11 @@ class Account(models.Model):
 
 
 class AccountHistory(models.Model):
+    """
+    Model for storing Bnet account data which daily changes need to be tracked.
+    An instance is made once a day when the account is inspected for the first
+    time a given day if the player played D3 since the last registered date.
+    """
     related_account = models.ForeignKey(Account, related_name='history')
     date = models.DateField(auto_now_add=True)
     paragon_sc = models.IntegerField()
