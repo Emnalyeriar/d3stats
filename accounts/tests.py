@@ -4,7 +4,9 @@ from django.utils import timezone
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 from rest_framework import status
-from rest_framework.test import APITestCase, APIClient, APIRequestFactory, force_authenticate
+from rest_framework.test import (
+    APITestCase, APIRequestFactory, force_authenticate
+)
 from .models import Account, AccountHistory
 from .views import AccountView
 
@@ -15,11 +17,14 @@ class AccountTests(APITestCase):
     """
     EXAMPLE_ACCOUNTS = ({
         'region': 'eu',
-        'battle_tag': 'Emnalyeriar-2594'}, {
+        'battle_tag': 'Emnalyeriar-2594'
+    }, {
         'region': 'us',
-        'battle_tag': 'Sanctum-1158'}, {
+        'battle_tag': 'Sanctum-1158'
+    }, {
         'region': 'kr',
-        'battle_tag': '특수부대-3188'}, {
+        'battle_tag': '특수부대-3188'
+    }, {
         'region': 'tw',
         'battle_tag': '死亡戰刃-3700'
     })
@@ -45,7 +50,7 @@ class AccountTests(APITestCase):
         time,
         """
         for response in self.responses:
-                self.assertEqual(response.status_code, status.HTTP_200_OK)
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
         account = Account.objects.filter(
             battle_tag=self.EXAMPLE_ACCOUNTS[0]['battle_tag'])
         account_history = AccountHistory.objects.filter(account=account)

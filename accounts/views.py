@@ -38,8 +38,7 @@ class AccountView(APIView):
         account_history = AccountHistory.objects.order_by(
             '-date').filter(account=account)
 
-        if (not account or
-           not account_history or
+        if (not account or not account_history or
            account.last_updated.date() != timezone.now().date()):
             API = BnetAPI(region, battle_tag)
             if API.is_valid():
@@ -74,7 +73,7 @@ class AccountView(APIView):
                 account_history_today.save()
                 account.last_history = account_history_today
 
-            if (data['lastUpdated'] > account.last_played):
+            if data['lastUpdated'] > account.last_played:
                 account.last_played = data['lastUpdated']
                 account.heroes = data['heroes'],
                 account.guild_name = data['guildName'],
