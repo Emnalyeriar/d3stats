@@ -2,9 +2,11 @@
 from django.db import connection
 from django.utils import timezone
 from django.core.urlresolvers import reverse
+from django.contrib.auth.models import User
 from rest_framework import status
-from rest_framework.test import APITestCase
+from rest_framework.test import APITestCase, APIClient, APIRequestFactory, force_authenticate
 from .models import Account, AccountHistory
+from .views import AccountView
 
 
 class AccountTests(APITestCase):
@@ -48,24 +50,40 @@ class AccountTests(APITestCase):
             battle_tag=self.EXAMPLE_ACCOUNTS[0]['battle_tag'])
         account_history = AccountHistory.objects.filter(account=account)
 
+        battle_tag = self.EXAMPLE_ACCOUNTS[0]['battle_tag']
+
         self.assertEqual(account.count(), 1)
         self.assertEqual(account_history.count(), 1)
-        self.assertEqual(
-            account[0].battle_tag, self.EXAMPLE_ACCOUNTS[0]['battle_tag'])
-        self.assertEqual(
-            str(account[0]), self.EXAMPLE_ACCOUNTS[0]['battle_tag'])
+        self.assertEqual(account[0].battle_tag, battle_tag)
+        self.assertEqual(str(account[0]), battle_tag)
         self.assertEqual(
             str(account_history[0]),
-            timezone.now().date().strftime('%Y-%m-%d'))
+            battle_tag + ' | ' + timezone.now().date().strftime('%Y-%m-%d')
+        )
 
-    def test_list_all_accounts(self):
+    def test_list_all_accounts_for_admin(self):
         """
-        Ensure listing all accounts view works correctly.
+        Ensure only admin can list all accounts.
+        """
+        factory = APIRequestFactory()
+        admin = User.objects.create(username='admin')
+        admin.is_staff = True
+        admin.save()
+        view = AccountView.as_view()
+        request = factory.get('api/accounts/')
+        force_authenticate(request, user=admin)
+        response = view(request)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), len(self.EXAMPLE_ACCOUNTS))
+
+    def test_list_all_accounts_for_user(self):
+        """
+        Ensure users cannot view all accounts
         """
         url = reverse('accounts-list')
         response = self.client.get(url)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), len(self.EXAMPLE_ACCOUNTS))
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_not_found_account(self):
         """

@@ -1,12 +1,9 @@
-from datetime import datetime
-
 from django.utils import timezone
-
 from rest_framework import status, generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-from battlenet.API import get_account
+from battlenet.API import BnetAPI
 
 from .models import Account, AccountHistory
 from .serializers import BaseAccountSerializer, AccountSerializer
@@ -44,10 +41,11 @@ class AccountView(APIView):
         if (not account or
            not account_history or
            account.last_updated.date() != timezone.now().date()):
-            APIresponse = get_account(region, battle_tag)
-            if isinstance(APIresponse, Response):
-                return APIresponse
-            data = APIresponse['data']
+            API = BnetAPI(region, battle_tag)
+            if API.is_valid():
+                data = API.data
+            else:
+                return API.response
 
             if not account:
                 account = Account(
