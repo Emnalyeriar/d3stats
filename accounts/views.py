@@ -26,9 +26,15 @@ class AccountView(APIView):
     """
     def get(self, request, region=None, battle_tag=None, format=None):
         if region is None or battle_tag is None:
-            accounts = Account.objects.all()
-            serializer = AccountSerializer(accounts, many=True)
-            return Response(serializer.data)
+            if request.user.is_staff:
+                accounts = Account.objects.all()
+                serializer = AccountSerializer(accounts, many=True)
+                return Response(serializer.data)
+            else:
+                return Response({
+                    'status': 'Forbidden',
+                    'message': 'Admin only view'
+                }, status=status.HTTP_403_FORBIDDEN)
 
         account = Account.objects.filter(
             battle_tag__iexact=battle_tag).first()
