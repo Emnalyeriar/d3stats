@@ -37,6 +37,7 @@ INSTALLED_APPS = (
     'rest_framework',
     'authentication',
     'accounts',
+    'heroes',
 )
 
 MIDDLEWARE_CLASSES = (
