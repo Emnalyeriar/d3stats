@@ -45,22 +45,9 @@ class AccountView(APIView):
            not account_history or
            account.last_updated.date() != timezone.now().date()):
             APIresponse = get_account(region, battle_tag)
-            if APIresponse.status_code != 200:
-                return Response({
-                    'status': 'Internal Server Error',
-                    'message': 'Cannot connect to Battle.net'
-                }, status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-            data = APIresponse.json()
-
-            if 'code' in data and data['code'] == 'NOTFOUND':
-                return Response({
-                    'status': 'Not Found',
-                    'message': 'The account could not be found'
-                }, status.HTTP_404_NOT_FOUND)
-
-            data['lastUpdated'] = datetime.fromtimestamp(
-                int(data['lastUpdated'])).date()
+            if isinstance(APIresponse, Response):
+                return APIresponse
+            data = APIresponse['data']
 
             if not account:
                 account = Account(
