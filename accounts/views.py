@@ -37,7 +37,7 @@ class AccountView(APIView):
                 }, status=status.HTTP_403_FORBIDDEN)
 
         account = Account.objects.filter(
-            battle_tag__iexact=battle_tag).first()
+            battle_tag__iexact=battle_tag, region=region).first()
         account_history = AccountHistory.objects.order_by(
             '-date').filter(account=account)
 
