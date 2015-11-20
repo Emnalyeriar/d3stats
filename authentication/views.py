@@ -11,6 +11,9 @@ from authentication.serializers import UserSerializer
 
 
 class UserViewSet(viewsets.ModelViewSet):
+    """
+    List and create users.
+    """
     lookup_field = 'username'
     queryset = User.objects.all()
     serializer_class = UserSerializer
@@ -23,7 +26,6 @@ class UserViewSet(viewsets.ModelViewSet):
             return (permissions.AllowAny(),)
 
         return (permissions.IsAuthenticated(), IsAdmin(),)
-        # return (IsAdmin(),)
 
     def list(self, request):
         queryset = User.objects.all()
@@ -33,7 +35,6 @@ class UserViewSet(viewsets.ModelViewSet):
     def create(self, request):
         serializer = self.serializer_class(data=request.data)
 
-        # if serializer.is_valid(raise_exception=True):
         if serializer.is_valid():
             User.objects.create_user(**serializer.validated_data)
 
@@ -61,6 +62,9 @@ class UserViewSet(viewsets.ModelViewSet):
 
 
 class LoginView(views.APIView):
+    """
+    Cookie based login endpoint.
+    """
     def post(self, request, format=None):
         data = json.loads(request.body.decode("utf-8"))
 
@@ -90,6 +94,9 @@ class LoginView(views.APIView):
 
 
 class LogoutView(views.APIView):
+    """
+    Logout endpoint.
+    """
     permission_classes = (permissions.IsAuthenticated,)
 
     def post(self, request, format=None):
