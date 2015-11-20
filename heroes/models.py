@@ -26,7 +26,7 @@ class Hero(models.Model):
     last_played = models.DateField()
     class_name = models.CharField(choices=CLASSES, max_length=100)
     gender = models.IntegerField(choices=GENDERS)
-    skills = models.ManyToMany('Skills')
+    skills = models.ManyToManyField('Skills')
     elites = models.IntegerField()
     paragon = models.IntegerField()
     hardcore = models.BooleanField()
@@ -34,9 +34,9 @@ class Hero(models.Model):
     season_created = models.IntegerField()
     legendary_powers = JSONField()
     last_history = models.ForeignKey('HeroHistory', blank=True, null=True)
-    skills = models.ManyToMany('Skills')
-    runes = models.ManyToMany('Runes')
-    passives = models.ManyToMany('Passives')
+    skills = models.ManyToManyField('Skills')
+    runes = models.ManyToManyField('Runes')
+    passives = models.ManyToManyField('Passives')
     items = JSONField()
     # skill1 = models.ForeignKey()
     # rune1 = models.ForeignKey()
@@ -117,7 +117,7 @@ class Skills(models.Model):
     """
     Model storing skills that are used by heroes.
     """
-    slug = models.CharField(max_legth=300)
+    slug = models.CharField(max_length=300)
     info = JSONField()
 
 
@@ -125,8 +125,8 @@ class Runes(models.Model):
     """
     Model storing runes that are attached to skills.
     """
-    slug = models.CharField(max_legth=300)
-    type = models.CharField(max_legth=300)
+    slug = models.CharField(max_length=300)
+    type = models.CharField(max_length=300)
     info = JSONField()
 
 
@@ -134,5 +134,5 @@ class Passives(models.Model):
     """
     Model storing passive skills that are used by heroes.
     """
-    slug = models.CharField(max_legth=300)
+    slug = models.CharField(max_length=300)
     info = JSONField()

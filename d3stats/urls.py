@@ -8,21 +8,17 @@ from authentication.views import UserViewSet, LoginView, LogoutView
 from .views import IndexView
 
 from accounts.views import AccountView, RecentlyUpdatedView, LeaderboardsView
+from heroes.views import HeroView
 
 router = routers.SimpleRouter()
 router.register(r'register', UserViewSet, base_name='register')
-# router.register(r'posts', PostViewSet)
-
-# accounts_router = routers.NestedSimpleRouter(
-#     router, r'accounts', lookup='account'
-# )
-# accounts_router.register(r'posts', AccountPostsViewSet)
 
 urlpatterns = patterns(
     '',
-    url(r'^api/', include(router.urls)),
     url(r'^admin/', include(admin.site.urls)),
-    # url(r'^api/v1/', include(accounts_router.urls)),
+
+    url(r'^api/', include(router.urls)),
+
     url(r'^api/auth/login/$', LoginView.as_view(), name='login'),
     url(r'^api/auth/logout/$', LogoutView.as_view(), name='logout'),
 
@@ -33,6 +29,8 @@ urlpatterns = patterns(
         name='recent'),
     url(r'^api/accounts/leaderboards/(?P<region>\w+)/(?P<league>\w+[-]*\w+)/$',
         LeaderboardsView.as_view(), name='leaderboards'),
+
+    url(r'^api/heroes/$', HeroView.as_view(), name='accounts-list'),
 
     url('^.*$', IndexView.as_view(), name='index'),
 )
