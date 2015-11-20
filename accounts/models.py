@@ -42,5 +42,12 @@ class AccountHistory(models.Model):
     elites = models.IntegerField()
     monsters_hc = models.IntegerField()
 
+    class Meta:
+        verbose_name_plural = 'Accounts History'
+
     def __str__(self):
-        return self.date.strftime('%Y-%m-%d')
+        data = {
+            'battle_tag': self.related_account.battle_tag,
+            'date': self.date.strftime('%Y-%m-%d')
+        }
+        return "{battle_tag} | {date}".format(**data)

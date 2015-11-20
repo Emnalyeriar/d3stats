@@ -1,7 +1,10 @@
 from django.conf.urls import patterns, url, include
+from django.contrib import admin
+
 from rest_framework import routers
 
 from authentication.views import UserViewSet, LoginView, LogoutView
+
 from .views import IndexView
 
 from accounts.views import AccountView, RecentlyUpdatedView, LeaderboardsView
@@ -18,6 +21,7 @@ router.register(r'register', UserViewSet, base_name='register')
 urlpatterns = patterns(
     '',
     url(r'^api/', include(router.urls)),
+    url(r'^admin/', include(admin.site.urls)),
     # url(r'^api/v1/', include(accounts_router.urls)),
     url(r'^api/auth/login/$', LoginView.as_view(), name='login'),
     url(r'^api/auth/logout/$', LogoutView.as_view(), name='logout'),
@@ -29,5 +33,6 @@ urlpatterns = patterns(
         name='recent'),
     url(r'^api/accounts/leaderboards/(?P<region>\w+)/(?P<league>\w+[-]*\w+)/$',
         LeaderboardsView.as_view(), name='leaderboards'),
+
     url('^.*$', IndexView.as_view(), name='index'),
 )
