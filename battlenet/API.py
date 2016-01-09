@@ -25,8 +25,14 @@ class BnetAPI:
             "locale=en_GB&apikey={2}".format(*url_data)
         )
 
-    def get_hero_data():
-        pass
+    def get_hero_data(self):
+        url_data = (self.region, self.battle_tag, settings.BNET_APIKEY,
+                    self.hero_id)
+        self.response = requests.get(
+            "https://{0}.api.battle.net/"
+            "d3/profile/{1}/hero/{3}?"
+            "locale=en_GB&apikey={2}".format(*url_data)
+        )
 
     def is_valid(self):
         if self.response.status_code != 200:
