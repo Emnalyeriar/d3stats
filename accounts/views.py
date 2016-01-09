@@ -36,7 +36,7 @@ class AccountView(APIView):
         account = Account.objects.filter(
             battle_tag__iexact=battle_tag, region=region).first()
         account_history = AccountHistory.objects.order_by(
-            '-date').filter(account=account)
+            '-date').filter(related_account=account)
 
         if (not account or not account_history or
            account.last_updated.date() != timezone.now().date()):

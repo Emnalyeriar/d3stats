@@ -30,7 +30,8 @@ urlpatterns = patterns(
     url(r'^api/accounts/leaderboards/(?P<region>\w+)/(?P<league>\w+[-]*\w+)/$',
         LeaderboardsView.as_view(), name='leaderboards'),
 
-    url(r'^api/heroes/$', HeroView.as_view(), name='accounts-list'),
+    url(r'^api/heroes/(?P<region>\w+)/(?P<battle_tag>\w{2,12}-\d{4})/(?P<hero_id>\d+)/$',
+        HeroView.as_view(), name='hero-details'),
 
     url('^.*$', IndexView.as_view(), name='index'),
 )
