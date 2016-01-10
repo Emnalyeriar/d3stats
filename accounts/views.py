@@ -15,8 +15,8 @@ class AccountView(APIView):
     Main View for Account model.
 
     This view checks if Account was already inspected today. If so it just
-    return the account data from db, otherwise makes a new Account instance
-    or updated the data based on Battle.net API data.
+    returns the account data from db, otherwise it makes a new Account instance
+    or updates the data based on Battle.net API data.
 
     @get /api/accounts -> displays all accounts adata #just for debugging
     @get /api/accounts/<region>/<battle_tag>/ -> displays bnet account data
@@ -85,7 +85,7 @@ class AccountView(APIView):
         return Response(serializer.data)
 
 
-class RecentlyUpdatedView(APIView):
+class AccountsRecentlyUpdatedView(APIView):
     """
     Shows the last 10 updated accounts.
     """
@@ -95,7 +95,7 @@ class RecentlyUpdatedView(APIView):
         return Response(serializer.data)
 
 
-class LeaderboardsView(generics.ListAPIView):
+class AccountsLeaderboardsView(generics.ListAPIView):
     """
     Shows accounts leaderboards.
 
