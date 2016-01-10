@@ -13,7 +13,16 @@ from .serializers import HeroSerializer
 
 
 class HeroView(APIView):
+    """
+    Main View for Hero model.
 
+    This view checks if Hero was already inspected today. If so it just
+    returns the hero data from db, otherwise it makes a new Hero instance
+    or updates the data based on Battle.net API data.
+
+    @get /api/heroes -> displays all heroes adata #just for debugging
+    @get /api/heroes/<region>/<battle_tag>/<hero_id> -> displays bnet hero data
+    """
     def get(self, request, region=None, battle_tag=None, hero_id=None):
 
         if region is None or battle_tag is None or hero_id is None:
@@ -120,6 +129,8 @@ class HeroView(APIView):
 
 
 def update_skills(hero, data):
+    hero.skills.clear()
+    hero.runes.clear()
     for skill in data['skills']['active']:
         current_skill = skill['skill']
         current_rune = skill['rune']
@@ -140,6 +151,7 @@ def update_skills(hero, data):
             )
             db_rune.save()
         hero.runes.add(db_rune)
+    hero.passives.clear()
     for passive in data['skills']['passive']:
         current_passive = passive['skill']
         db_passive = Passive.objects.filter(
@@ -152,6 +164,7 @@ def update_skills(hero, data):
             )
             db_passive.save()
         hero.passives.add(db_passive)
+    hero.legendary_powers.clear()
     for power in data['legendaryPowers']:
         if power is None:
             continue
