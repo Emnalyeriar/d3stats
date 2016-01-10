@@ -42,6 +42,9 @@ class Hero(models.Model):
     legendary_powers = models.ManyToManyField('LegendaryPower')
     items = JSONField()
 
+    class Meta:
+        verbose_name_plural = 'Heroes'
+
     def __str__(self):
         return self.name
 
@@ -87,7 +90,7 @@ class HeroHistory(models.Model):
     secondary_resource = models.IntegerField()
 
     class Meta:
-        verbose_name_plural = 'Accounts History'
+        verbose_name_plural = 'Heroes History'
 
     def __str__(self):
         data = {
