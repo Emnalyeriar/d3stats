@@ -73,7 +73,7 @@ class HeroHistory(models.Model):
     lightning_resist = models.IntegerField()
     poison_resist = models.IntegerField()
     arcane_resist = models.IntegerField()
-    critDamage = models.IntegerField()
+    crit_damage = models.IntegerField()
     blockChance = models.IntegerField()
     block_amount_min = models.IntegerField()
     block_amount_max = models.IntegerField()
