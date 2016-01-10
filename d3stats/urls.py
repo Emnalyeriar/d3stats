@@ -37,7 +37,7 @@ urlpatterns = patterns(
         HeroView.as_view(), name='hero-details'),
     url(r'^api/heroes/recent/?$', HeroRecentlyUpdatedView.as_view(),
         name='heroes-recent'),
-    url(r'^api/heroes/leaderboards/(?P<region>\w+)/(?P<league>\w+[-]*\w+)/?$',
+    url(r'^api/heroes/leaderboards/(?P<region>\w+)/(?P<league>\w+[-]*\w+)/(?P<stat>\w+)/?$',
         HeroLeaderboardsView.as_view(), name='heroes-leaderboards'),
 
     url('^.*$', IndexView.as_view(), name='index'),

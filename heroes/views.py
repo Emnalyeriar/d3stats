@@ -1,7 +1,7 @@
 import datetime
 
 from django.utils import timezone
-from rest_framework import status
+from rest_framework import status, generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
@@ -9,7 +9,8 @@ from battlenet.API import BnetAPI
 
 from accounts.models import Account
 from .models import Hero, HeroHistory, Skill, Rune, Passive, LegendaryPower
-from .serializers import HeroSerializer
+from .serializers import HeroSerializer, BaseHeroSerializer
+from .paginations import LeaderboardsPagination
 
 
 class HeroView(APIView):
@@ -98,7 +99,7 @@ class HeroView(APIView):
                     lightning_resist=data['stats']['lightningResist'],
                     poison_resist=data['stats']['poisonResist'],
                     arcane_resist=data['stats']['arcaneResist'],
-                    critDamage=data['stats']['critDamage'],
+                    crit_damage=data['stats']['critDamage'],
                     blockChance=data['stats']['blockChance'],
                     block_amount_min=data['stats']['blockAmountMin'],
                     block_amount_max=data['stats']['blockAmountMax'],
@@ -178,3 +179,50 @@ def update_skills(hero, data):
             )
             db_power.save()
         hero.legendary_powers.add(db_power)
+
+
+class HeroRecentlyUpdatedView(APIView):
+    """
+    Shows the last 10 updated heroes.
+    """
+    def get(self, request, format=None):
+        heroes = Hero.objects.order_by('-last_updated')[:10]
+        serializer = BaseHeroSerializer(heroes, many=True)
+        return Response(serializer.data)
+
+
+class HeroLeaderboardsView(generics.ListAPIView):
+    """
+    Shows heroes leaderboards.
+
+    @get /api/heroes/leaderboards/<region>/<league>/<stat>/
+    -> shows leaderoards for specified region, league and stat
+    """
+    serializer_class = BaseHeroSerializer
+    model = Hero
+    pagination_class = LeaderboardsPagination
+
+    def get_queryset(self):
+        region = self.kwargs['region']
+        stat = self.kwargs['stat'].replace('-', '_')
+        query = '-last_history__'+stat
+        league = self.kwargs['league']
+        if region == 'all':
+            heroes = Hero.objects.all()
+        else:
+            heroes = Hero.objects.filter(account__region=region)
+        if league == 'sc':
+            hardcore = False
+            seasonal = False
+        elif league == 'hc':
+            hardcore = True
+            seasonal = False
+        elif league == 'sc-s':
+            hardcore = False
+            seasonal = True
+        elif league == 'hc-s':
+            hardcore = True
+            seasonal = True
+        heroes = heroes.filter(hardcore=hardcore, seasonal=seasonal)
+        queryset = heroes.order_by(query)
+        return queryset

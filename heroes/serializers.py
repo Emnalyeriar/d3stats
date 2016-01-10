@@ -58,7 +58,10 @@ class BaseHeroSerializer(serializers.ModelSerializer):
     Basic Hero model serializer containing last history registry
     """
     last_history = HeroHistorySerializer(read_only=True)
-    skills = SkillSerializer(read_only=True)
+    skills = SkillSerializer(many=True, read_only=True)
+    runes = RuneSerializer(many=True, read_only=True)
+    passives = PassiveSerializer(many=True, read_only=True)
+    legendary_powers = LegendaryPowerSerializer(many=True, read_only=True)
 
     class Meta:
         model = Hero
