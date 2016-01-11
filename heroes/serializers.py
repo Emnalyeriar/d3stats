@@ -84,19 +84,19 @@ class HeroSerializer(serializers.ModelSerializer):
     passives = PassiveSerializer(many=True, read_only=True)
     legendary_powers = LegendaryPowerSerializer(many=True, read_only=True)
 
-    # def to_representation(self, instance):
-    #     data = super(HeroSerializer, self).to_representation(instance)
-    #     leagues = {
-    #         'rank_sc': 'paragon_sc',
-    #         'rank_hc': 'paragon_hc',
-    #         'rank_sc_s': 'paragon_sc_s',
-    #         'rank_hc_s': 'paragon_hc_s',
-    #     }
-    #     for rank, paragon in leagues.items():
-    #         filter = {'last_history__'+paragon+'__gt':
-    #                   getattr(instance.last_history, paragon)}
-    #         data[rank] = Account.objects.filter(**filter).count() + 1
-    #     return data
+    def to_representation(self, instance):
+        data = super(HeroSerializer, self).to_representation(instance)
+        stats = {
+            'rank_damage': 'damage',
+            'rank_toughness': 'toughness',
+        }
+        for rank, stat in stats.items():
+            filter = {'last_history__'+stat+'__gt':
+                      getattr(instance.last_history, stat),
+                      'seasonal': instance.seasonal,
+                      'account__region': instance.account.region}
+            data[rank] = Hero.objects.filter(**filter).count() + 1
+        return data
 
     class Meta:
         model = Hero
