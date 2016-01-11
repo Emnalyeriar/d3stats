@@ -59,7 +59,8 @@ class HeroView(APIView):
                 return API.response
 
             if not hero:
-                last_played = datetime.date.fromtimestamp(data['last-updated'])
+                # last_played = datetime.date.fromtimestamp(data['last-updated'])
+                last_played = data['last-updated']
                 hero = Hero(
                     hero_id=data['id'],
                     name=data['name'],
@@ -118,8 +119,8 @@ class HeroView(APIView):
                 hero_history_today.save()
                 hero.last_history = hero_history_today
 
-            if data['lastUpdated'] > hero.last_played:
-                hero.last_played = data['lastUpdated']
+            if data['last-updated'] > hero.last_played:
+                hero.last_played = data['last-updated']
                 hero.elites = data['kills']['elites']
                 hero.dead = data['dead']
                 hero.items = data['items']

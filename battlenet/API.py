@@ -43,9 +43,14 @@ class BnetAPI:
         if 'code' in data and data['code'] == 'NOTFOUND':
             self.set_response_to_404()
             return False
-        last_updated = data.get('lastUpdate', data['last-updated'])
-        data['lastUpdated'] = datetime.fromtimestamp(
-            int(last_updated)).date()
+        last_updated = data.get('lastUpdated', None)
+        if last_updated is None:
+            last_updated = data['last-updated']
+            data['last-updated'] = datetime.fromtimestamp(
+                int(last_updated)).date()
+        else:
+            data['lastUpdated'] = datetime.fromtimestamp(
+                int(last_updated)).date()
         self.set_data(data)
         return True
 
